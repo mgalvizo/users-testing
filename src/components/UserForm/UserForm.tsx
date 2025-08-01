@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +17,10 @@ const UserForm = () => {
 
   const {
     handleSubmit,
-    formState: { isValid, errors },
+    formState: {
+      isValid,
+      // errors
+    },
     reset,
   } = methods;
 
@@ -39,9 +42,9 @@ const UserForm = () => {
     return;
   };
 
-  useEffect(() => {
-    console.log("ERRORS", errors);
-  }, [errors]);
+  // useEffect(() => {
+  //   console.log("ERRORS", errors);
+  // }, [errors]);
 
   return (
     <>
