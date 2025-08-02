@@ -51,10 +51,15 @@ const UserForm = () => {
       <h2>Users Form</h2>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Input id="name" label="Name" type="text" placeholder="John Doe" />
+          <Input
+            id="name"
+            label="Enter Name"
+            type="text"
+            placeholder="John Doe"
+          />
           <Input
             id="email"
-            label="Email"
+            label="Enter Email"
             type="email"
             placeholder="john_doe@mail.com"
           />

@@ -20,6 +20,7 @@ const Input = ({ id, label, type, placeholder }: InputProps) => {
     <div>
       <label htmlFor={id}>{label}</label>
       <input
+        id={id}
         type={type}
         {...register(id, { onChange: () => trigger(id) })}
         placeholder={placeholder}

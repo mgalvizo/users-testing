@@ -28,3 +28,97 @@ Jest finds all files in the src folder that:
 3. Decide what the important parts of the component are
 4. Write a test to make sure each part works as expected
 5. Run tests at the command line
+
+## Queries
+
+An **important** part of testing is finding the elements that our component has created.
+
+- Need to test form submission? &rarr; You need to find a button to click!
+- Need to test navigation? &rarr; You need to find a link to click!
+- Need to make sure a header is visible? &rarr; You need to find a header!
+
+## React Testing Library Query System
+
+`getBy` returns an element or an error.
+
+All search variants can be extended with the `All` word.
+
+- `getByText()`: find the element by its `textContent` value
+- `getByRole()`: by its `role` attribute value
+- `getByLabelText()`: by its `label` attribute value
+- `getByPlaceholderText()`: by its `placeholder` attribute value
+- `getByAltText()`: by its `alt` attribute value
+- `getByDisplayValue()`: by its `value` attribute, usually for `<input>` elements
+- `getByTitle()`: by its `title` attribute value
+- `getByTestId()`: by its `data-testid`
+
+## Search Variants
+
+Every time you are asserting that an element isn't there, use `queryBy`
+
+`findBy` search variant is used for asynchronous elements which will be there eventually.
+
+All search variants can be extended with the `All` word.
+
+- `queryBy`
+  - `queryByText`
+  - `queryByRole`
+  - `queryByLabelText`
+  - `queryByPlaceholderText`
+  - `queryByAltText`
+  - `queryByDisplayValue`
+- `findBy`
+  - `findByText`
+  - `findByRole`
+  - `findByLabelText`
+  - `findByPlaceholderText`
+  - `findByAltText`
+  - `findByDisplayValue`
+
+## ARIA Role
+
+Aria roles clarify the purpose of an HTML element.
+
+Traditionally used by screen readers - softwares to help people understand the content on the screen.
+
+Many HTML elements have an "implicit" or automatically assigned role.
+
+Elements can be manually assigned a role (Avoid this), even trained engineers do this incorrectly.
+
+- `heading` &rarr; `h1`, `h2`, `h3`, `h4`, `h5`, `h6`
+- `list` &rarr; `ul`, `li`
+- `button` &rarr; `button`
+- `link` &rarr; `a`
+- `textbox` &rarr; `input`, `type="text"`
+
+## Matchers from Jest
+
+- `expect(['a', 'b']).toHaveLength(2)` &rarr; makes sure the value is an array with a particular length
+- `expect(5).toEqual(5)` &rarr; makes sure the value equals another value
+- `expect(['a', 'b', 'c']).toContain('b')` &rarr; makes sure an array contains a value, or make sure a string contains another string
+- `expect(fn).toThrow()` &rarr; makes sure a function throws an error when called
+- `expect(mock).toHaveBeenCalled()` &rarr; makes sure a mock function has been called
+
+## Matchers from React Testing Library
+
+- `expect(element).toBeInTheDocument()` &rarr; makes sure element is present on the page
+- `expect(element).toBeEnabled()` &rarr; makes sure an element (like an input) is not disabled
+- `expect(element).toHaveClass()` &rarr; makes sure an element has a class name
+- `expect(element).toHaveTextContent()` &rarr; makes sure an element has some particular text
+- `expect(element).toHaveValue()` &rarr; makes sure an input, select, or textarea has a value
+
+## User Functions
+
+- `user.click(element)` &rarr; simulates clicking on the provided element
+- `user.keyboard('asdfg')` &rarr; simulates typing `asdfg`
+- `user.keyboard('{Enter}')` &rarr; simulates pressing the Enter key
+
+## Mock Functions
+
+In English "mock" can mean "not real".
+
+Fake function that doesn't do anything.
+
+Records whenever it gets called, and the arguments it was called with.
+
+Used very often when we need to make sure a component calls a callback.
