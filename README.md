@@ -175,3 +175,31 @@ describe("UserList", () => {
 ```
 
 **container.querySelector**
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import UserList from "./UserList";
+
+vi.mock("@/context/Users/hooks/useUsers", () => ({
+  useUsers: () => ({
+    users: [
+      { id: "1", name: "John Doe", email: "john@example.com" },
+      { id: "2", name: "Jane Smith", email: "jane@example.com" },
+      { id: "3", name: "Bob Johnson", email: "bob@example.com" },
+    ],
+  }),
+}));
+
+describe("UserList", () => {
+  test("it renders one row per user", () => {
+    // a container is automatically added in
+    // <div> element
+    const { container } = render(<UserList />);
+
+    // Find all the rows in tbody
+    const rows = container.querySelectorAll("tbody tr");
+
+    expect(rows).toHaveLength(3);
+  });
+});
+```
