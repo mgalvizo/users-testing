@@ -122,3 +122,56 @@ Fake function that doesn't do anything.
 Records whenever it gets called, and the arguments it was called with.
 
 Used very often when we need to make sure a component calls a callback.
+
+## Help with Query Functions
+
+Memorizing all the query functions to find elements and roles is hard.
+
+To get help with finding a particular element, use this helper function.
+
+`screen.logTestingPlaygroundURL()`
+
+Takes the HTML currently rendered by your component and creates a link to view that HTML in the "Testing Playground" tool
+
+Testing Playground helps you write queries (functions to find elements)
+
+## Query Function Fallbacks
+
+Sometimes finding elements by role just doesn't work well
+
+- Fallbacks:
+  - `data-testid`
+  - `container.querySelector`
+
+**data-testid**
+
+```tsx
+import { render, screen, within } from "@testing-library/react";
+import UserList from "./UserList";
+
+vi.mock("@/context/Users/hooks/useUsers", () => ({
+  useUsers: () => ({
+    users: [
+      { id: "1", name: "John Doe", email: "john@example.com" },
+      { id: "2", name: "Jane Smith", email: "jane@example.com" },
+      { id: "3", name: "Bob Johnson", email: "bob@example.com" },
+    ],
+  }),
+}));
+
+describe("UserList", () => {
+  test("it renders one row per user", () => {
+    render(<UserList />);
+
+    // Find the tbody
+    // We added a data-testid="users" in the JSX (NOT GREAT)
+    const tbody = screen.getByTestId("users");
+    // Find all the rows in the table
+    const rows = within(tbody).getAllByRole("row");
+
+    expect(rows).toHaveLength(3);
+  });
+});
+```
+
+**container.querySelector**

@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import user from "@testing-library/user-event";
-import { vi } from "vitest";
 import UserForm from "./UserForm";
 
 // Mock the useUsers hook
@@ -99,6 +98,7 @@ describe("UserForm", () => {
     });
   });
 
+  // Optional here since
   afterAll(() => {
     vi.clearAllMocks();
   });
