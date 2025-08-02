@@ -22,7 +22,7 @@ const UserList = () => {
             <th scope="col">Email</th>
           </tr>
         </thead>
-        <tbody>{renderedUsers}</tbody>
+        <tbody data-testid="users">{renderedUsers}</tbody>
       </table>
     </>
   );

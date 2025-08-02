@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import UserList from "./UserList";
 
 vi.mock("@/context/Users/hooks/useUsers", () => ({
@@ -22,9 +22,7 @@ describe("UserList", () => {
   });
 
   test("it renders one row per user", () => {
-    // a container is automatically added in
-    // <div> element
-    const { container } = render(<UserList />);
+    render(<UserList />);
 
     // Query helper
     // Open the generated URL in the browser
@@ -32,8 +30,11 @@ describe("UserList", () => {
     // If an element is hard to click over you can write inline styles like a thick border with display block to make it easier to click
     screen.logTestingPlaygroundURL();
 
-    // Find all the rows in tbody
-    const rows = container.querySelectorAll("tbody tr");
+    // Find the tbody
+    // We added a data-testid="users" in the JSX (NOT GREAT)
+    const tbody = screen.getByTestId("users");
+    // Find all the rows in the table
+    const rows = within(tbody).getAllByRole("row");
 
     expect(rows).toHaveLength(3);
   });

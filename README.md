@@ -140,7 +140,7 @@ Testing Playground helps you write queries (functions to find elements)
 Sometimes finding elements by role just doesn't work well
 
 - Fallbacks:
-  - `data-testid`
+  - `data-testid` **(preferred)**
   - `container.querySelector`
 
 **data-testid**
