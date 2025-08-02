@@ -203,3 +203,7 @@ describe("UserList", () => {
   });
 });
 ```
+
+## beforeEach
+
+`beforeEach` is discouraged by React Testing Library.

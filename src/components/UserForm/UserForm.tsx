@@ -50,7 +50,7 @@ const UserForm = () => {
     <>
       <h2>Users Form</h2>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} aria-label="User Form">
           <Input
             id="name"
             label="Enter Name"

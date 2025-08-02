@@ -7,6 +7,7 @@ const App = () => {
     <UsersProvider>
       <main>
         <UserForm />
+        <hr />
         <UserList />
       </main>
     </UsersProvider>

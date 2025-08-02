@@ -12,11 +12,7 @@ vi.mock("@/context/Users/hooks/useUsers", () => ({
 }));
 
 describe("UserForm", () => {
-  beforeEach(() => {
-    mockOnAddUser.mockClear();
-  });
-
-  test("it shows name and email inputs and a button", () => {
+  test("shows name and email inputs and a button", () => {
     // render the component
     render(<UserForm />);
 
@@ -32,7 +28,8 @@ describe("UserForm", () => {
     expect(button).toBeInTheDocument();
   });
 
-  test("it does not submit with empty inputs", async () => {
+  test("does not submit with empty inputs", async () => {
+    mockOnAddUser.mockClear();
     render(<UserForm />);
 
     const button = screen.getByRole("button");
@@ -44,7 +41,8 @@ describe("UserForm", () => {
     });
   });
 
-  test("it calls onAddUser with the correct arguments", async () => {
+  test("calls onAddUser with the correct arguments", async () => {
+    mockOnAddUser.mockClear();
     render(<UserForm />);
 
     // "name" can be:
@@ -75,18 +73,15 @@ describe("UserForm", () => {
     });
   });
 
-  test("it resets the form after submit", async () => {
+  test("resets the form after submit", async () => {
     render(<UserForm />);
 
     const nameInput = screen.getByRole("textbox", { name: /enter name/i });
     const emailInput = screen.getByRole("textbox", { name: /enter email/i });
     const button = screen.getByRole("button", { name: /add user/i });
 
-    // Simulate typing name
     await user.click(nameInput);
     await user.keyboard("John");
-
-    // Simulate typing email
     await user.click(emailInput);
     await user.keyboard("john@example.com");
 
