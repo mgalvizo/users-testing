@@ -420,5 +420,100 @@ describe("ColorList", () => {
     // it returns a promise that gets rejected
     await expect(screen.findByRole("textbox")).rejects.toThrow();
   });
+
+  test("getBy, queryBy, findBy finding 1 element", async () => {
+    render(<ColorList />);
+
+    // only 1 ul element in component
+    expect(screen.getByRole("list")).toBeInTheDocument();
+    expect(screen.queryByRole("list")).toBeInTheDocument();
+    // Good for simple case
+    expect(await screen.findByRole("list")).toBeInTheDocument();
+    // In case you want to chain .not, .toEqual, .toHaveTextContent, etc
+    await expect(screen.findByRole("list")).resolves.toBeInTheDocument();
+  });
+
+  test("getBy, queryBy, findBy finding > 1 elements", async () => {
+    render(<ColorList />);
+
+    // All single queries throw error if more than 1 element is found
+    expect(() => screen.getByRole("listitem")).toThrow();
+    expect(() => screen.queryByRole("listitem")).toThrow();
+    await expect(screen.findByRole("listitem")).rejects.toThrow();
+  });
+
+  test("getAllBy, queryAllBy, findAllBy", async () => {
+    render(<ColorList />);
+
+    expect(screen.getAllByRole("listitem")).toHaveLength(3); // if 0 matches throws an error
+    expect(screen.queryAllByRole("listitem")).toHaveLength(3); // if 0 matches will return an empty array []
+    expect(await screen.findAllByRole("listitem")).toHaveLength(3); // if 0 matches throws an error
+    // or
+    await expect(screen.findAllByRole("listitem")).resolves.toHaveLength(3);
+  });
+
+  test("favor using getBy to prove an element exist", () => {
+    render(<ColorList />);
+
+    const list = screen.getByRole("list");
+
+    expect(list).toBeInTheDocument();
+  });
+
+  test("favor using queryBy to prove an element does not exist", () => {
+    render(<ColorList />);
+
+    // There is no input type text
+    const textbox = screen.queryByRole("textbox");
+
+    expect(textbox).not.toBeInTheDocument();
+  });
+});
+```
+
+## Async Queries
+
+```tsx
+import { useState, useEffect } from "react";
+
+const fakeFetchColors = () => {
+  return Promise.resolve(["red", "green", "blue"]);
+};
+
+const LoadableColorList = () => {
+  const [colors, setColors] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchColors = async () => {
+      const fetchedColors = await fakeFetchColors();
+
+      setColors(fetchedColors);
+    };
+
+    fetchColors();
+  }, []);
+
+  const renderedColors = colors.map((color, index) => {
+    return <li key={index}>{color}</li>;
+  });
+
+  return <ul>{renderedColors}</ul>;
+};
+
+export default LoadableColorList;
+```
+
+```tsx
+import { screen, render } from "@testing-library/react";
+import LoadableColorList from "./LoadableColorList";
+
+describe("LoadableColorList", () => {
+  test("favor findBy or findAllBy when data fetching", async () => {
+    render(<LoadableColorList />);
+
+    const listitems = await screen.findAllByRole("listitem");
+
+    expect(listitems).toHaveLength(3);
+  });
 });
 ```
