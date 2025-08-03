@@ -207,3 +207,218 @@ describe("UserList", () => {
 ## beforeEach
 
 `beforeEach` is discouraged by React Testing Library.
+
+## Partial Role List
+
+```tsx
+const Roles = () => {
+  return (
+    <div>
+      <a href="/">Link</a>
+      <button>Button</button>
+      <footer>Content Info</footer>
+      <h1>Heading</h1>
+      <header>Banner</header>
+      <img alt="description" /> Img
+      <input type="checkbox" /> Checkbox
+      <input type="number" /> Spinbutton
+      <input type="radio" /> Radio
+      <input type="text" /> Textbox
+      <li>ListItem</li>
+      <ul>List</ul>
+    </div>
+  );
+};
+
+export default Roles;
+```
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import Roles from "./Roles";
+
+describe("Roles", () => {
+  test("can find elements by role", () => {
+    render(<Roles />);
+
+    const roles = [
+      "link",
+      "button",
+      "contentinfo",
+      "heading",
+      "banner",
+      "img",
+      "checkbox",
+      "spinbutton",
+      "radio",
+      "textbox",
+      "listitem",
+      "list",
+    ];
+
+    for (const role of roles) {
+      const el = screen.getByRole(role);
+
+      expect(el).toBeInTheDocument();
+    }
+  });
+});
+```
+
+## Finding by Accessible Name
+
+Attempting to select with `screen.getByRole` will cause an error since we have two buttons.
+
+```tsx
+const AccessibleName = () => {
+  return (
+    <div>
+      <button>Submit</button>
+      <button>Cancel</button>
+    </div>
+  );
+};
+
+export default AccessibleName;
+```
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import AccessibleName from "./AccessibleName";
+
+describe("Accessible Name", () => {
+  test("can select by accessible name", () => {
+    render(<AccessibleName />);
+
+    const submit = screen.getByRole("button", { name: /submit/i });
+    const cancel = screen.getByRole("button", { name: /cancel/i });
+  });
+});
+```
+
+## Linking Inputs to Labels
+
+```tsx
+const Inputs = () => {
+  return (
+    <div>
+      <label htmlFor="email">Email</label>
+      <input id="email" />
+      <label htmlFor="search">Search</label>
+      <input id="search" />
+    </div>
+  );
+};
+
+export default Inputs;
+```
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import Inputs from "./Inputs";
+
+describe("Inputs", () => {
+  test("shows an email and search input", () => {
+    render(<Inputs />);
+
+    const emailInput = screen.getByRole("textbox", { name: /email/i });
+    const searchInput = screen.getByRole("textbox", { name: /search/i });
+
+    expect(emailInput).toBeInTheDocument();
+    expect(searchInput).toBeInTheDocument();
+  });
+});
+```
+
+## Directly Assigning an Accessible Name
+
+```tsx
+const IconButtons = () => {
+  return (
+    <div>
+      <button aria-label="sign in">
+        <svg />
+      </button>
+      <button aria-label="sign out">
+        <svg />
+      </button>
+    </div>
+  );
+};
+
+export default IconButtons;
+```
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import IconButtons from "./IconButtons";
+
+describe("IconButtons", () => {
+  test("find elements based on label", () => {
+    render(<IconButtons />);
+
+    const signinButton = screen.getByRole("button", { name: /sign in/i });
+    const signoutButton = screen.getByRole("button", { name: /sign out/i });
+
+    expect(signinButton).toBeInTheDocument();
+    expect(signoutButton).toBeInTheDocument();
+  });
+});
+```
+
+## Deeper into Query Functions
+
+- Start of Function Name
+  - getBy
+  - getAllBy
+  - queryBy
+  - queryAllBy
+  - findBy
+  - findAllBy
+- These names indicate the following:
+  1. Whether the function will return an element or an array of elements
+  2. What happens if the function finds 0, 1 or more than 1 of the targeted elements
+  3. Whether the function runs instantly (synchronously) or looks for an element over the span of time (asynchronously)
+- When to use each:
+  - Prove an element exists `getBy`, `getAllBy`
+  - Prove an element does not exist `queryBy`, `queryAllBy`
+  - Make sure an element eventually exists `findBy`, `findAllBy`
+
+## getBy, queryBy, findBy
+
+```tsx
+const ColorList = () => {
+  return (
+    <ul>
+      <li>Red</li>
+      <li>Green</li>
+      <li>Blue</li>
+    </ul>
+  );
+};
+
+export default ColorList;
+```
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import ColorList from "./ColorList";
+
+describe("ColorList", () => {
+  test("getBy, queryBy, findBy finding 0 elements", async () => {
+    render(<ColorList />);
+
+    // There is no textbox in the component
+    // getBy throws an error if 0 or more than 1 elements are found
+    // For this test we pass a function and inside we call the query
+    expect(() => screen.getByRole("textbox")).toThrow();
+    // queryBy returns null if 0 elements are found
+    expect(screen.queryByRole("textbox")).toEqual(null);
+    // findBy watches the output of your component over a span of 1 second
+    // every 50 milliseconds it's going to try to find some element
+    // if it doesn't find the element within the span of 1 second it throws an error
+    // it returns a promise that gets rejected
+    await expect(screen.findByRole("textbox")).rejects.toThrow();
+  });
+});
+```
