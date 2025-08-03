@@ -517,3 +517,76 @@ describe("LoadableColorList", () => {
   });
 });
 ```
+
+## Query Criteria
+
+Query functions have common endings. The different name endings indicate how the query for an element will be performed.
+
+**Always** prefer using query function ending with `ByRole`. Only use others if `ByRole` is not an option.
+
+- `ByRole` finds elements based on their **implicit** or **explicit** ARIA role
+- `ByLabelText` find form elements based upon the text their paired labels contain
+- `ByPlaceholderText` find form elements based upon their placeholder text
+- `ByText` find elements upon the text they contain
+- `ByDisplayValue` find elements based upon their current value
+- `ByAltText` find elements upon their `alt` attribute
+- `ByTitle` find elements based upon their `title` attribute
+- `ByTestId` find elements based upon their `data-testid` attribute
+
+```tsx
+import { useState } from "react";
+
+const DataForm = () => {
+  const [email, setEmail] = useState<string>("someone@mail.com");
+
+  return (
+    <form>
+      <h3>Enter Data</h3>
+      <div data-testid="image wrapper">
+        <img src="data.jpg" alt="data" />
+      </div>
+      <label htmlFor="email">Email</label>
+      <input
+        type="email"
+        name="email"
+        id="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <label htmlFor="color">Color</label>
+      <input type="text" name="color" id="color" placeholder="Red" />
+      <button type="submit" title="Click when ready to submit">
+        Submit
+      </button>
+    </form>
+  );
+};
+
+export default DataForm;
+```
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import DataForm from "./DataForm";
+
+describe("DataForm", () => {
+  test("selecting different elements", () => {
+    render(<DataForm />);
+
+    const elements: HTMLElement[] = [
+      screen.getByRole("button"), // often used
+      screen.getByLabelText("Email"),
+      screen.getByPlaceholderText("Red"),
+      screen.getByText(/enter data/i), // often used
+      screen.getByDisplayValue("someone@mail.com"),
+      screen.getByAltText("data"),
+      screen.getByTitle("Click when ready to submit"),
+      screen.getByTestId("image wrapper"), // often used
+    ];
+
+    for (const element of elements) {
+      expect(element).toBeInTheDocument();
+    }
+  });
+});
+```
