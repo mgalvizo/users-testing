@@ -590,3 +590,71 @@ describe("DataForm", () => {
   });
 });
 ```
+
+## Matchers
+
+Matchers make sure that a value is what we expect it to be.
+
+```tsx
+const DataForm = () => {
+  return (
+    <div>
+      <button type="button">Go Back</button>
+      <form aria-label="form">
+        <button type="submit">Save</button>
+        <button type="button">Cancel</button>
+      </form>
+    </div>
+  );
+};
+
+export default DataForm;
+```
+
+```tsx
+import { render, screen, within } from "@testing-library/react";
+import type { ByRoleMatcher } from "@testing-library/react";
+import DataForm from "./DataForm";
+
+// Custom matcher
+const toContainRole = (
+  container: HTMLElement,
+  role: ByRoleMatcher,
+  quantity: number = 1
+): CustomMatcherResult => {
+  const elements = within(container).queryAllByRole(role);
+
+  if (elements.length === quantity) {
+    return {
+      pass: true,
+      message: () => `Found ${quantity} ${role} elements`,
+    };
+  }
+
+  return {
+    pass: false,
+    message: () =>
+      `Expected to find ${quantity} ${role} elements, found ${elements.length} instead`,
+  };
+};
+
+// connect custom matcher to "expect" function
+expect.extend({ toContainRole });
+
+describe("DataForm", () => {
+  test("the form displays two buttons", () => {
+    render(<DataForm />);
+
+    // const form = screen.getByRole("form");
+    // // buttons inside a form
+    // const buttons = within(form).getAllByRole("button");
+
+    // expect(buttons).toHaveLength(2);
+
+    // Rewrite the test to use custom matcher
+    const form = screen.getByRole("form");
+
+    expect(form).toContainRole("button", 2);
+  });
+});
+```
